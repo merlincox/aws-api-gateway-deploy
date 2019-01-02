@@ -1,0 +1,15 @@
+package: github.com/merlincox/aws-api-gateway-deploy
+import:
+- package: github.com/aws/aws-lambda-go
+  subpackages:
+  - events
+  - lambda
+- package: github.com/aws/aws-sdk-go
+  subpackages:
+  - aws
+  - aws/session
+  - service/sns
+- package: github.com/golang/mock
+  subpackages:
+  - gomock
+- package: github.com/smartystreets/goconvey/convey

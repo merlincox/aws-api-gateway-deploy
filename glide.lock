@@ -1,0 +1,42 @@
+hash: 57543df765034a75dee76b03ba2fa69fb81cb29eba23c75ffe49a31cec10ae7e
+updated: 2019-01-02T11:04:36.545716875Z
+imports:
+- name: github.com/aws/aws-lambda-go
+  version: fafa7e49388b8991caf99308e80655ba91816b72
+  subpackages:
+  - events
+  - lambda
+  - lambda/messages
+  - lambdacontext
+- name: github.com/aws/aws-sdk-go
+  version: f0bbc646e13bfc451409e960cf33239aabb8671a
+  subpackages:
+  - aws
+  - aws/session
+  - service/sns
+- name: github.com/golang/mock
+  version: 1f837508b8ff6c01edf3bb94cc9d1fc0527f001c
+  subpackages:
+  - gomock
+- name: github.com/smartystreets/goconvey
+  version: e5b2b7c9111590d019a696c7800593f666e1a7f4
+  subpackages:
+  - convey
+  - convey/gotest
+  - convey/reporting
+- name: golang.org/x/net
+  version: 1e491301e022f8f977054da4c2d852decd59571f
+  subpackages:
+  - context
+testImports:
+- name: github.com/gopherjs/gopherjs
+  version: 2967252ace8b112e63a5b5879e92de915fe731f4
+  subpackages:
+  - js
+- name: github.com/jtolds/gls
+  version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
+- name: github.com/smartystreets/assertions
+  version: 9c0ea8acbc1d8ad689f9e6fe0c1fa5838e0cabc2
+  subpackages:
+  - internal/go-render/render
+  - internal/oglematchers

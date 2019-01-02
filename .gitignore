@@ -1,0 +1,7 @@
+# golang output binary directory
+bin
+export
+.DS_Store
+package.yml
+.idea
+vendor
