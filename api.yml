@@ -4,10 +4,6 @@ Transform: AWS::Serverless-2016-10-31
 Description: Sample AWS Gateway
 
 Parameters:
-  AutoPublishAliasName:
-    Type: String
-    Default: current
-    Description: The alias used for Auto Publishing
   Platform:
     Type: String
     Description: Platform should be test, stage or live
@@ -39,7 +35,6 @@ Resources:
   ApiLambdaFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      AutoPublishAlias: !Ref AutoPublishAliasName
       FunctionName: !Sub ${ApiLambdaNameBase}-${Platform}
       Timeout: 10
       Handler: bin/api
@@ -67,10 +62,7 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SampleAPI}/*"
-      FunctionName:
-        !Sub
-      - ${FuncArn}:current
-      - { FuncArn: !GetAtt ApiLambdaFunction.Arn }
+      FunctionName: !GetAtt ApiLambdaFunction.Arn
       Principal: apigateway.amazonaws.com
 
   ApiLambdaFunctionIAMRole:
@@ -173,7 +165,7 @@ Resources:
                       type: "string"
               x-amazon-apigateway-integration:
                 uri:
-                  !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambdaFunction.Arn}:${AutoPublishAliasName}/invocations"
+                  !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambdaFunction.Arn}/invocations"
                 responses:
                   default:
                     statusCode: "200"
