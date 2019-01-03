@@ -2,15 +2,11 @@
 
 package models
 
-// Empty: (No description)
-type Empty struct {
-}
-
 // Status: API status information
 type Status struct {
 	Branch    string `json:"branch"`
-	Platform  string `json:"platform"`
 	Commit    string `json:"commit"`
+	Platform  string `json:"platform"`
 	Release   string `json:"release"`
 	Timestamp string `json:"timestamp"`
 }
