@@ -2,7 +2,7 @@
 
 cd "$( dirname "$0" )"
 
-for cmd in "go glide aws git"; do
+for cmd in "go glide aws git jq"; do
 
     if [[ -z "$(which ${cmd})" ]]; then
         echo "${cmd} is required to run this script."  >&2
@@ -38,10 +38,10 @@ fi
 
 set -euo pipefail
 
-template_yml=api.yml
+template_yaml=api.yaml
 
-if [[ ! -f ${template_yml} ]]; then
-   echo "${template_yml} not found" >&2
+if [[ ! -f ${template_yaml} ]]; then
+   echo "${template_yaml} not found" >&2
    exit 1
 fi
 
@@ -131,7 +131,7 @@ fi
 cf_bucket=cf-api-import-$(date +"%y%m%d%H%M")
 cf_stack=api-stack-${platform}
 
-package_yml=$(mktemp /tmp/XXXXXXX.yml)
+package_yml=$(mktemp /tmp/XXXXXXX.yaml)
 
 glide install
 
@@ -168,7 +168,7 @@ aws s3api create-bucket --bucket $cf_bucket --create-bucket-configuration Locati
 bucket_created=1
 
 aws cloudformation package \
-       --template-file ${template_yml} \
+       --template-file ${template_yaml} \
        --s3-bucket $cf_bucket \
        --output-template-file $package_yml
 
