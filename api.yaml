@@ -292,7 +292,7 @@ Resources:
               val2:
                 type: "number"
               result:
-                type: "number"
+                type: "string"
               locale:
                 type: "string"
             description: "Calculation Result"
