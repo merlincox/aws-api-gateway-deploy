@@ -6,7 +6,7 @@ package models
 type CalculationResult struct {
 	Locale string  `json:"locale"`
 	Op     string  `json:"op"`
-	Result float64 `json:"result"`
+	Result string  `json:"result"`
 	Val1   float64 `json:"val1"`
 	Val2   float64 `json:"val2"`
 }
