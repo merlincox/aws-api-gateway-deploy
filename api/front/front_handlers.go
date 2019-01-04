@@ -30,7 +30,7 @@ func (front Front) calcHandler(request events.APIGatewayProxyRequest) (interface
 		return nil, models.ConstructApiError(400, err.Error())
 	}
 
-	locale, ok := request.Headers["locale"]
+	locale, ok := request.Headers["x-locale"]
 
 	if !ok {
 		locale = "undefined"
@@ -71,7 +71,11 @@ func (front Front) calcHandler(request events.APIGatewayProxyRequest) (interface
 
 	default:
 
-		return nil, models.ConstructApiError(400, "Unknown operation %v", op)
+		return nil, models.ConstructApiError(400, "Unknown calc operation: %v", op)
+	}
+
+	if math.IsNaN(result.Result) || math.IsInf(result.Result, 1) || math.IsInf(result.Result, -1) {
+		return nil, models.ConstructApiError(400, "Out of limits: %v %v %v", val1, op, val2)
 	}
 
 	return result, nil

@@ -32,9 +32,9 @@ func TestUnknownRoute(t *testing.T) {
 
 		Convey("Then it should return a bad request status code", func() {
 			response, err := testFront.Handler(request)
-			So(response.Body, ShouldEqual, `{"message":"No such route as GET/unknownpath","code":400}`)
+			So(response.Body, ShouldEqual, `{"message":"No such route as GET/unknownpath","code":404}`)
 			So(response.Headers["Access-Control-Allow-Origin"], ShouldEqual, "*")
-			So(response.StatusCode, ShouldEqual, 400)
+			So(response.StatusCode, ShouldEqual, 404)
 			So(err, ShouldBeNil)
 		})
 	})
