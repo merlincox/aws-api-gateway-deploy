@@ -25,7 +25,7 @@ package_dir=pkg/models
 export_dir=export
 
 export_json=${export_dir}/swagger_${platform}.json
-exported_go=${export_dir}/auto_${platform}.go
+exported_go=${export_dir}/auto_${platform}.go_new
 current_go=${package_dir}/api.go
 
 if [[ ! -d ${export_dir} ]]; then
