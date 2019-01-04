@@ -1,5 +1,5 @@
-hash: 57543df765034a75dee76b03ba2fa69fb81cb29eba23c75ffe49a31cec10ae7e
-updated: 2019-01-02T11:04:36.545716875Z
+hash: 967ce722e79a4f80c4af258063e03ec17d06d88f4c0296c09421b2c20281ac18
+updated: 2019-01-04T12:55:21.402503036Z
 imports:
 - name: github.com/aws/aws-lambda-go
   version: fafa7e49388b8991caf99308e80655ba91816b72
@@ -24,10 +24,10 @@ imports:
   - convey
   - convey/gotest
   - convey/reporting
-- name: golang.org/x/net
-  version: 1e491301e022f8f977054da4c2d852decd59571f
+- name: golang.org/x/text
+  version: f21a4dfb5e38f5895301dc265a8def02365cc3d0
   subpackages:
-  - context
+  - message
 testImports:
 - name: github.com/gopherjs/gopherjs
   version: 2967252ace8b112e63a5b5879e92de915fe731f4
@@ -40,3 +40,7 @@ testImports:
   subpackages:
   - internal/go-render/render
   - internal/oglematchers
+- name: golang.org/x/net
+  version: 1e491301e022f8f977054da4c2d852decd59571f
+  subpackages:
+  - context
