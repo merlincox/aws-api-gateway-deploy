@@ -1,12 +1,16 @@
 package front
 
 import (
-	"github.com/aws/aws-lambda-go/events"
-
-	"github.com/merlincox/aws-api-gateway-deploy/pkg/models"
 	"strconv"
 	"fmt"
 	"math"
+
+	"golang.org/x/text/message"
+	"golang.org/x/text/language"
+
+	"github.com/aws/aws-lambda-go/events"
+
+	"github.com/merlincox/aws-api-gateway-deploy/pkg/models"
 )
 
 func (front Front) statusHandler(request events.APIGatewayProxyRequest) (interface{}, models.ApiError) {
@@ -21,6 +25,14 @@ func (front Front) calcHandler(request events.APIGatewayProxyRequest) (interface
 		fullop string
 	)
 
+	locale, ok := request.Headers["Accept-Language"]
+
+	p := message.NewPrinter(language.Make(locale))
+
+	if !ok {
+		locale = "undefined"
+	}
+
 	op := request.PathParameters["op"]
 
 	val1, err := getFloatFromRequest(request, "val1")
@@ -33,12 +45,6 @@ func (front Front) calcHandler(request events.APIGatewayProxyRequest) (interface
 
 	if err != nil {
 		return nil, models.ConstructApiError(400, err.Error())
-	}
-
-	locale, ok := request.Headers["x-locale"]
-
-	if !ok {
-		locale = "undefined"
 	}
 
 	switch op[0:3] {
@@ -87,7 +93,7 @@ func (front Front) calcHandler(request events.APIGatewayProxyRequest) (interface
 		Op:     fullop,
 		Val1:   val1,
 		Val2:   val2,
-		Result: result,
+		Result: p.Sprintf("%v", result),
 	}, nil
 }
 

@@ -192,7 +192,7 @@ Resources:
                  in: "query"
                  required: true
                  type: "string"
-               - name: "x-locale"
+               - name: "Accept-Language"
                  in: "header"
                  required: false
                  type: "string"
@@ -220,7 +220,7 @@ Resources:
                  - "method.request.path.op"
                  - "method.request.querystring.val1"
                  - "method.request.querystring.val2"
-                 - "method.request.header.x-locale"
+                 - "method.request.header.Accept-Language"
                  contentHandling: "CONVERT_TO_TEXT"
                  type: "aws_proxy"
              options:

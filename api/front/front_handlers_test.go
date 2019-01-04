@@ -2,6 +2,8 @@ package front
 
 import (
 	"testing"
+	"fmt"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/golang/mock/gomock"
@@ -9,7 +11,6 @@ import (
 
 	"github.com/merlincox/aws-api-gateway-deploy/pkg/models"
 	"github.com/merlincox/aws-api-gateway-deploy/pkg/utils"
-	"fmt"
 )
 
 var testFront = NewFront(models.Status{
@@ -54,13 +55,13 @@ func TestStatusRoute(t *testing.T) {
 	})
 }
 
-func testCalc(t *testing.T, val1, val2, result float64, op, fullop string) {
+func testCalc(t *testing.T, val1, val2 float64, locale, result, op, fullop string) {
 
 	mockController := gomock.NewController(t)
 	defer mockController.Finish()
 
 	expected := models.CalculationResult{
-		Locale: "en-GB",
+		Locale: locale,
 		Op:     fullop,
 		Result: result,
 		Val1:   val1,
@@ -78,7 +79,7 @@ func testCalc(t *testing.T, val1, val2, result float64, op, fullop string) {
 				"op": op,
 			},
 			Headers: map[string]string{
-				"x-locale": "en-GB",
+				"Accept-Language": locale,
 			},
 			RequestContext: events.APIGatewayProxyRequestContext{
 				ResourcePath: `/calc/{op}`,
@@ -88,7 +89,11 @@ func testCalc(t *testing.T, val1, val2, result float64, op, fullop string) {
 
 		Convey("Then it should return the correct result", func() {
 			response, err := testFront.Handler(request)
-			So(response.Body, ShouldEqual, utils.JsonStringify(expected))
+
+			// Do not differentiate non-breaking spaces from ordinary spaces for testing purposes
+			body := strings.Replace(response.Body, "\u00A0", " ", -1)
+
+			So(body, ShouldEqual, utils.JsonStringify(expected))
 			So(response.Headers["Access-Control-Allow-Origin"], ShouldEqual, "*")
 			So(response.Headers["Cache-Control"], ShouldEqual, "max-age=123")
 			So(response.StatusCode, ShouldEqual, 200)
@@ -98,26 +103,37 @@ func testCalc(t *testing.T, val1, val2, result float64, op, fullop string) {
 
 }
 
-func TestCalcRouteAdd(t *testing.T) {
-	testCalc(t, 3.5, 2.25, 5.75, "add", "add")
+func TestCalcRouteAddEn(t *testing.T) {
+	testCalc(t, 3.5, 2.25, "en-GB", "5.75", "add", "add")
 }
 
-func TestCalcRouteSub(t *testing.T) {
-	testCalc(t, 3.5, 2.25, 1.25, "sub", "subtract")
+func TestCalcRouteAddFr(t *testing.T) {
+	testCalc(t, 3.5, 2.25, "fr-FR", "5,75", "add", "add")
 }
 
-
-func TestCalcRouteMult(t *testing.T) {
-	testCalc(t, 1.5, 7, 10.5, "mul", "multiply")
+func TestCalcRouteSubEn(t *testing.T) {
+	testCalc(t, 3.5, 2.25, "en-GB", "1.25", "sub", "subtract")
 }
 
-func TestCalcRoutePow(t *testing.T) {
-	testCalc(t, 2, 3, 8, "pow", "power")
+func TestCalcRouteSubFr(t *testing.T) {
+	testCalc(t, 3.5, 2.25, "fr-FR", "1,25", "sub", "subtract")
 }
 
-func TestCalcRouteRoot(t *testing.T) {
+func TestCalcRouteMultEn(t *testing.T) {
+	testCalc(t, 1.5, 7000, "en-GB", "10,500", "mul", "multiply")
+}
 
-	testCalc(t, 16, 2, 4, "roo", "root")
+func TestCalcRouteMultFr(t *testing.T) {
+	testCalc(t, 1.5, 7000, "fr-FR", "10 500", "mul", "multiply")
+}
+
+func TestCalcRoutePowEn(t *testing.T) {
+	testCalc(t, 2, 3, "en-GB","8", "pow", "power")
+}
+
+func TestCalcRouteRootEn(t *testing.T) {
+
+	testCalc(t, 16, 2, "en-GB","4", "roo", "root")
 }
 
 func testCalcRouteBad(t *testing.T, val1, val2 float64, op, context, msg string) {
@@ -141,7 +157,7 @@ func testCalcRouteBad(t *testing.T, val1, val2 float64, op, context, msg string)
 				"op": op,
 			},
 			Headers: map[string]string{
-				"x-locale": "en-GB",
+				"Accept-Language": "fr",
 			},
 			RequestContext: events.APIGatewayProxyRequestContext{
 				ResourcePath: `/calc/{op}`,
@@ -149,7 +165,7 @@ func testCalcRouteBad(t *testing.T, val1, val2 float64, op, context, msg string)
 			},
 		}
 
-		Convey("Then it should return correct error", func() {
+		Convey("Then it should return the correct error", func() {
 			response, err := testFront.Handler(request)
 			So(response.Body, ShouldEqual, utils.JsonStringify(expected))
 			So(response.Headers["Access-Control-Allow-Origin"], ShouldEqual, "*")
