@@ -25,7 +25,7 @@ package_dir=pkg/models
 export_dir=export
 
 export_json=${export_dir}/swagger_${platform}.json
-exported_go=${export_dir}/auto_${platform}.go_new
+exported_go=${export_dir}/auto_${platform}.go
 current_go=${package_dir}/api.go
 
 if [[ ! -d ${export_dir} ]]; then
@@ -63,6 +63,7 @@ if [[ ! -z "${schema_generator}" ]]; then
                   ;;
         esac
     fi
+    mv ${exported_go} ${exported_go}_new
 else
     echo "No schema generator found"
 fi
