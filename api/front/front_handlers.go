@@ -16,6 +16,11 @@ func (front Front) statusHandler(request events.APIGatewayProxyRequest) (interfa
 
 func (front Front) calcHandler(request events.APIGatewayProxyRequest) (interface{}, models.ApiError) {
 
+	var (
+		result float64
+		fullop string
+	)
+
 	op := request.PathParameters["op"]
 
 	val1, err := getFloatFromRequest(request, "val1")
@@ -36,49 +41,54 @@ func (front Front) calcHandler(request events.APIGatewayProxyRequest) (interface
 		locale = "undefined"
 	}
 
-	result := models.CalculationResult{
-		Locale: locale,
-		Op:     op,
-		Val1:   val1,
-		Val2:   val2,
-	}
-
 	switch op[0:3] {
 
 	case "add":
 
-		result.Result = val1 + val2
+		result = val1 + val2
+		fullop = "add"
 
 	case "sub":
 
-		result.Result = val1 - val2
+		result = val1 - val2
+		fullop = "subtract"
 
 	case "mul":
 
-		result.Result = val1 * val2
+		result = val1 * val2
+		fullop = "multiply"
 
 	case "div":
 
-		result.Result = val1 / val2
+		result = val1 / val2
+		fullop = "divide"
 
 	case "pow":
 
-		result.Result = math.Pow(val1, val2)
+		result = math.Pow(val1, val2)
+		fullop = "power"
 
 	case "roo":
 
-		result.Result = math.Pow(val1, 1/val2)
+		result = math.Pow(val1, 1/val2)
+		fullop = "root"
 
 	default:
 
 		return nil, models.ConstructApiError(400, "Unknown calc operation: %v", op)
 	}
 
-	if math.IsNaN(result.Result) || math.IsInf(result.Result, 1) || math.IsInf(result.Result, -1) {
-		return nil, models.ConstructApiError(400, "Out of limits: %v %v %v", val1, op, val2)
+	if math.IsNaN(result) || math.IsInf(result, 1) || math.IsInf(result, -1) {
+		return nil, models.ConstructApiError(400, "Out of limits: %v %v %v", val1, fullop, val2)
 	}
 
-	return result, nil
+	return models.CalculationResult{
+		Locale: locale,
+		Op:     fullop,
+		Val1:   val1,
+		Val2:   val2,
+		Result: result,
+	}, nil
 }
 
 func getFloatFromRequest(request events.APIGatewayProxyRequest, key string) (result float64, err error) {
