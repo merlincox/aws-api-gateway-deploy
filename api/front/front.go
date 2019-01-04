@@ -69,6 +69,10 @@ func (front *Front) getHandlerForRoute(route string) innerHandler {
 
 	case "GET/status":
 		return front.statusHandler
+
+	case "GET/calc/{op}":
+		return front.calcHandler
+
 	}
 
 	return front.unknownRouteHandler
@@ -81,7 +85,7 @@ func getRoute(request events.APIGatewayProxyRequest) string {
 
 func (front Front) unknownRouteHandler(request events.APIGatewayProxyRequest) (interface{}, models.ApiError) {
 
-	return nil, models.ConstructApiError(http.StatusBadRequest, "No such route as %v", getRoute(request))
+	return nil, models.ConstructApiError(http.StatusNotFound, "No such route as %v", getRoute(request))
 }
 
 func (front *Front) seoString(s string) string {

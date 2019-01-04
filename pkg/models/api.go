@@ -2,6 +2,19 @@
 
 package models
 
+// CalculationResult: Calculation Result
+type CalculationResult struct {
+	Locale string  `json:"locale"`
+	Op     string  `json:"op"`
+	Result float64 `json:"result"`
+	Val1   float64 `json:"val1"`
+	Val2   float64 `json:"val2"`
+}
+
+// Empty: (No description)
+type Empty struct {
+}
+
 // Status: API status information
 type Status struct {
 	Branch    string `json:"branch"`
