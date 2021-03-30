@@ -2,7 +2,7 @@
 
 cd "$( dirname "$0" )"
 
-for cmd in "go glide aws git jq"; do
+for cmd in "go aws git jq"; do
 
     if [[ -z "$(which ${cmd})" ]]; then
         echo "${cmd} is required to run this script."  >&2
@@ -133,7 +133,7 @@ cf_stack=api-stack-${platform}
 
 package_yml=$(mktemp /tmp/XXXXXXX.yaml)
 
-glide install
+go mod download
 
 if   go test ./...
 then echo "Tests passed"
