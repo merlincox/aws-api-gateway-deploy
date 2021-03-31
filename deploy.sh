@@ -73,24 +73,18 @@ if [[ -z "${domain_zone_id}" ]]; then
 fi
 
 custom_domain="${subdomain}.${domain}"
-lookup_domain=${custom_domain}
 
 # NB Cloud Front certs must be in us-east-1 region
 certificate_arn=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"${custom_domain}\") | .CertificateArn")
 
 if [[ -z "${certificate_arn}" ]]; then
-    lookup_domain=${domain}
-    certificate_arn=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"*.${domain}\") | .CertificateArn")
+     certificate_arn=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"*.${domain}\") | .CertificateArn")
 
     if [[ -z "${certificate_arn}" ]]; then
        echo "No SSL certificate was found for ${custom_domain} or *.${domain} patterns in us-east-1" >&2
         exit 1
     fi
 fi
-
-echo certificate_arn for ${lookup_domain} is $certificate_arn
-
-exit 0
 
 git_tag="untagged"
 
