@@ -75,16 +75,24 @@ fi
 custom_domain="${subdomain}.${domain}"
 
 # NB Cloud Front certs must be in us-east-1 region
-certificate_arn=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"${custom_domain}\") | .CertificateArn")
+certificate_arns=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"${custom_domain}\") | .CertificateArn")
 
-if [[ -z "${certificate_arn}" ]]; then
-     certificate_arn=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"*.${domain}\") | .CertificateArn")
+if [[ -z "${certificate_arns}" ]]; then
+     certificate_arns=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"*.${domain}\") | .CertificateArn")
 
-    if [[ -z "${certificate_arn}" ]]; then
+    if [[ -z "${certificate_arns}" ]]; then
        echo "No SSL certificate was found for ${custom_domain} or *.${domain} patterns in us-east-1" >&2
         exit 1
     fi
 fi
+
+for arn in ${certificate_arns}
+do
+
+  echo $arn
+
+done
+exit 1
 
 git_tag="untagged"
 
