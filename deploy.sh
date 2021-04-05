@@ -2,7 +2,7 @@
 
 cd "$( dirname "$0" )"
 
-for cmd in "go glide aws git jq"; do
+for cmd in "go aws git jq"; do
 
     if [[ -z "$(which ${cmd})" ]]; then
         echo "${cmd} is required to run this script."  >&2
@@ -78,7 +78,7 @@ custom_domain="${subdomain}.${domain}"
 certificate_arn=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"${custom_domain}\") | .CertificateArn")
 
 if [[ -z "${certificate_arn}" ]]; then
-    certificate_arn=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"*.${domain}\") | .CertificateArn")
+     certificate_arn=$(aws acm list-certificates --region us-east-1 | jq -r ".CertificateSummaryList[] | select(.DomainName == \"*.${domain}\") | .CertificateArn")
 
     if [[ -z "${certificate_arn}" ]]; then
        echo "No SSL certificate was found for ${custom_domain} or *.${domain} patterns in us-east-1" >&2
@@ -133,7 +133,7 @@ cf_stack=api-stack-${platform}
 
 package_yml=$(mktemp /tmp/XXXXXXX.yaml)
 
-glide install
+go mod download
 
 if   go test ./...
 then echo "Tests passed"

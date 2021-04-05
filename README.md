@@ -16,11 +16,10 @@ Altogether, the deployment script enables you to create to `https://{your-sub-do
 ### Prerequsisites
 
 * A domain with a hosted-zone record in AWS Route 53
-* A SSL certificate for that domain in the AWS Certificate Manager. Note that this certificate has to be in the 
+* A single, valid and up-to-date SSL certificate for that domain in the AWS Certificate Manager. Note that this certificate must be in the 
 `us-east-1` AWS region because it is deployed to CloudFront.
 * The AWS command line interface `aws` installed and suitably set up with credentials for your AWS account
-* `go` installed
-* `glide` (a go dependency manager) installed
+* `go` installed to a version supporting Go modules
 * `git` installed
 * `jq` installed (`jq` is a very useful command-line tool for manipulating JSON. See https://stedolan.github.io/jq.)
 

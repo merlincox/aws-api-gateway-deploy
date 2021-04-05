@@ -4,16 +4,16 @@ package front
 
 import (
 	"fmt"
-	"net/http"
-	"time"
 	"log"
-	"strconv"
+	"net/http"
 	"runtime/debug"
+	"strconv"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 
-	"github.com/merlincox/aws-api-gateway-deploy/pkg/utils"
 	"github.com/merlincox/aws-api-gateway-deploy/pkg/models"
+	"github.com/merlincox/aws-api-gateway-deploy/pkg/utils"
 )
 
 type Front struct {
@@ -21,7 +21,6 @@ type Front struct {
 	router      func(route string) innerHandler
 	cacheMaxAge int
 }
-
 
 type FrontHandler func(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 type innerHandler func(request events.APIGatewayProxyRequest) (interface{}, models.ApiError)
@@ -31,7 +30,7 @@ type innerHandler func(request events.APIGatewayProxyRequest) (interface{}, mode
 func NewFront(status models.Status, cacheMaxAge int) Front {
 
 	f := Front{
-		status: status,
+		status:      status,
 		cacheMaxAge: cacheMaxAge,
 	}
 
@@ -56,7 +55,7 @@ func (front Front) Handler(request events.APIGatewayProxyRequest) (response even
 	}()
 
 	route := getRoute(request)
-	log.Println("Handling a request for %v.", route)
+	log.Printf("Handling a request for %v.\n", route)
 
 	response = front.buildResponse(front.router(route)(request))
 
@@ -124,6 +123,6 @@ func (front *Front) buildResponse(data interface{}, err models.ApiError) events.
 		Headers: map[string]string{
 			"Cache-Control":               "max-age=" + strconv.Itoa(front.cacheMaxAge),
 			"Access-Control-Allow-Origin": "*",
-			"X-Timestamp":        time.Now().UTC().Format(time.RFC3339Nano),
+			"X-Timestamp":                 time.Now().UTC().Format(time.RFC3339Nano),
 		}}
 }
